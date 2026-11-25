@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>It's Ivhani's Birthday | You're invited</title>
+  <meta name="description" content="You're invited to Ivhani's 21st Birthday Celebration, 23 January 2027.">
+  <meta name="theme-color" content="#6b0f1f">
+
+  <!-- Link preview (WhatsApp, iMessage, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="It's Ivhani's Birthday">
+  <meta property="og:description" content="You're invited to her 21st Birthday Celebration. Tap to open your invitation.">
+  <meta property="og:image" content="https://ivhani-21st.github.io/ivhani-invite/og-image.jpg">
+  <meta property="og:site_name" content="Ivhani's 21st Birthday">
+  <meta property="og:image:secure_url" content="https://ivhani-21st.github.io/ivhani-invite/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="It's Ivhani's Birthday - burgundy invitation card">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://ivhani-21st.github.io/ivhani-invite/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink-50: #fff1f5;
+      --pink-100: #fde0e8;
+      --pink-200: #f9c6d4;
+      --pink-300: #f3a6bb;
+      --rose: #d96c8a;
+      --burg: #6b0f1f;
+      --burg-mid: #861a2e;
+      --burg-deep: #44081a;
+      --hi: rgba(255, 255, 255, .8);
+      --lo: rgba(120, 20, 50, .28);
+      --line: rgba(107, 15, 31, .35);
+
+      /* flower colors (doors override these) */
+      --petal: #ffe4eb;
+      --petal-edge: rgba(255, 255, 255, .9);
+      --center: #c4506f;
+      --leaf: #f4b3c5;
+      --stem: #eba0b6;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; }
+    body {
+      background: #f1b8c8;
+      color: var(--burg);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.2rem;
+      line-height: 1.45;
+      overflow: hidden;
+    }
+
+    /* The invitation is a phone-shaped column, centered on wide screens */
+    .stage {
+      position: relative;
+      height: 100svh;
+      width: min(100vw, 30rem);
+      margin: 0 auto;
+      overflow: hidden;
+      background: radial-gradient(120% 80% at 50% 0%, #fff4f7 0%, #fbd5e0 55%, #f3b0c4 100%);
+    }
+
+    .emboss { filter: drop-shadow(2px 3px 2px var(--lo)) drop-shadow(-1px -1px 1px var(--hi)); }
+    .flora-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+    /* Fixed corner flowers that stay while pages scroll */
+    .corner { position: absolute; width: 66%; pointer-events: none; z-index: 1; }
+    .corner.tl { top: -5%; left: -12%; }
+    .corner.br { bottom: -4%; right: -10%; width: 50%; }
+    .corner.br svg { transform: rotate(180deg); }
+
+    /* The scalloped frame that holds the scrolling pages */
+    .frame {
+      position: absolute;
+      inset: 7% 9% 14% 9%;
+      z-index: 2;
+      --r: 13px; /* size of each scallop */
+      filter:
+        drop-shadow(1.5px 0 0 var(--hi)) drop-shadow(-1.5px 0 0 var(--hi))
+        drop-shadow(0 1.5px 0 var(--hi)) drop-shadow(0 -1.5px 0 var(--hi))
+        drop-shadow(3px 5px 8px rgba(120, 20, 50, .3));
+    }
+    .frame:has(.arch:focus-visible) {
+      filter:
+        drop-shadow(2px 0 0 var(--burg)) drop-shadow(-2px 0 0 var(--burg))
+        drop-shadow(0 2px 0 var(--burg)) drop-shadow(0 -2px 0 var(--burg));
+    }
+    .arch {
+      position: absolute;
+      inset: 0;
+      background: var(--pink-100);
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+      outline: none;
+      /* centre block + a row of half-circles along every edge = scalloped border */
+      -webkit-mask:
+        linear-gradient(#000 0 0) center / calc(100% - 2 * var(--r) + 1px) calc(100% - 2 * var(--r) + 1px) no-repeat,
+        radial-gradient(ellipse 50% 100% at 50% 100%, #000 96%, #0000 100%) top left / calc(2 * var(--r)) var(--r) round no-repeat,
+        radial-gradient(ellipse 50% 100% at 50% 0, #000 96%, #0000 100%) bottom left / calc(2 * var(--r)) var(--r) round no-repeat,
+        radial-gradient(ellipse 100% 50% at 100% 50%, #000 96%, #0000 100%) top left / var(--r) calc(2 * var(--r)) no-repeat round,
+        radial-gradient(ellipse 100% 50% at 0 50%, #000 96%, #0000 100%) top right / var(--r) calc(2 * var(--r)) no-repeat round;
+              mask:
+        linear-gradient(#000 0 0) center / calc(100% - 2 * var(--r) + 1px) calc(100% - 2 * var(--r) + 1px) no-repeat,
+        radial-gradient(ellipse 50% 100% at 50% 100%, #000 96%, #0000 100%) top left / calc(2 * var(--r)) var(--r) round no-repeat,
+        radial-gradient(ellipse 50% 100% at 50% 0, #000 96%, #0000 100%) bottom left / calc(2 * var(--r)) var(--r) round no-repeat,
+        radial-gradient(ellipse 100% 50% at 100% 50%, #000 96%, #0000 100%) top left / var(--r) calc(2 * var(--r)) no-repeat round,
+        radial-gradient(ellipse 100% 50% at 0 50%, #000 96%, #0000 100%) top right / var(--r) calc(2 * var(--r)) no-repeat round;
+    }
+    .arch::-webkit-scrollbar { display: none; }
+
+    .page {
+      min-height: 100%;
+      scroll-snap-align: start;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      gap: .9rem;
+      padding: 22% 9% 12%;
+    }
+
+    /* Page backgrounds */
+    .p1 { background: var(--bg) center top / cover no-repeat, #cfcfc7; align-content: end; padding: 10% 6% 11%; }
+    .p2 { background: linear-gradient(180deg, #ffeaf0 0%, #fbd0dc 55%, #f5b7c9 100%); }
+    .p3 {
+      background:
+        linear-gradient(rgba(255, 244, 247, .25), rgba(255, 244, 247, .25)),
+        var(--bg) center / cover no-repeat,
+        #fde0e8;
+    }
+    .p4, .p6 { background: linear-gradient(180deg, #86182c 0%, #650f20 55%, #480919 100%); color: var(--pink-100); }
+    .p5 { background: linear-gradient(180deg, #ffeaf0 0%, #fbd0dc 55%, #f5b7c9 100%); }
+
+    /* Type */
+    h2, .display {
+      font-family: "Cinzel", Georgia, serif;
+      font-weight: 600;
+      letter-spacing: .02em;
+      line-height: 1.15;
+      text-shadow: 0 1px 0 var(--hi);
+    }
+    h2 { font-size: clamp(1.45rem, 6.4vw, 1.85rem); }
+    .p4 h2, .p6 h2 { color: var(--pink-200); text-shadow: 0 1px 2px rgba(0, 0, 0, .45); }
+    .small { font-size: 1.1rem; font-style: italic; opacity: .85; }
+
+    /* The message sits on a small gift tag */
+    .hey {
+      font-family: "Cinzel", Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.1rem, 5.2vw, 1.4rem);
+      line-height: 1.25;
+      color: #7a0f1a;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .6);
+      background: rgba(240, 238, 233, .93);
+      border: 1px solid rgba(107, 15, 31, .5);
+      border-radius: 999px;
+      padding: .7rem 1.5rem;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55), 1px 4px 10px rgba(40, 0, 10, .4);
+    }
+
+    .rule { width: 7rem; height: 1px; background: currentColor; opacity: .5; position: relative; margin: .3rem 0; }
+    .rule::after {
+      content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px;
+      background: var(--pink-100); border: 1px solid currentColor; border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .p4 .rule::after, .p6 .rule::after { background: #650f20; }
+
+    .bow-icon { width: 3.4rem; color: var(--burg); filter: drop-shadow(1px 2px 1px rgba(107, 15, 31, .25)); }
+
+    /* Invitation wording */
+    .invite-line { font-size: 1.25rem; font-style: italic; font-weight: 600; }
+    .age { font-family: "Cinzel", Georgia, serif; font-weight: 600; font-size: clamp(3.2rem, 15vw, 4.4rem); line-height: 1; text-shadow: 0 1px 0 var(--hi), 0 3px 6px rgba(107, 15, 31, .2); }
+    .age sup { font-size: .4em; vertical-align: super; letter-spacing: 0; }
+    .event { font-family: "Cinzel", Georgia, serif; font-weight: 600; font-size: clamp(1.15rem, 5.2vw, 1.45rem); line-height: 1.3; }
+
+    /* Date and time */
+    .when-card { display: grid; gap: .1rem; text-shadow: 0 0 10px rgba(255, 244, 247, .95), 0 1px 0 var(--hi); }
+    .when-card .big { font-family: "Cinzel", Georgia, serif; font-weight: 600; font-size: clamp(1.7rem, 8vw, 2.3rem); line-height: 1.15; }
+    .when-card + .when-card { margin-top: 1.1rem; }
+    .swatch { justify-self: center; width: 2.2rem; height: 2.2rem; margin-top: .35rem; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #a3243c, #6b0f1f 60%, #44081a); border: 2px solid var(--hi); box-shadow: 0 0 0 1.5px rgba(107, 15, 31, .5), 1px 3px 6px var(--lo); }
+
+    /* Countdown */
+    .count { display: flex; gap: .9rem; justify-content: center; }
+    .count b { display: block; font-family: "Cinzel", Georgia, serif; font-weight: 600; font-size: 2.1rem; line-height: 1; color: var(--pink-50); font-variant-numeric: tabular-nums; }
+    .count span { font-size: 1rem; font-style: italic; color: var(--pink-200); }
+
+    /* Map */
+    .map {
+      width: 72%; aspect-ratio: 1 / 1.05;
+      border-radius: 999px 999px 18px 18px;
+      overflow: hidden;
+      border: 3px solid var(--hi);
+      box-shadow: 0 0 0 2px rgba(107, 15, 31, .45), 2px 4px 8px var(--lo);
+      background: var(--pink-200);
+    }
+    .map iframe { width: 100%; height: 100%; border: 0; filter: saturate(.8) hue-rotate(-12deg); }
+    .plaque, .btn {
+      font: inherit;
+      color: var(--burg);
+      background: linear-gradient(#fff4f7, #f9cbd8);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .55), 1px 3px 5px var(--lo);
+      text-decoration: none;
+      text-shadow: 0 1px 0 var(--hi);
+    }
+    .plaque { padding: .45rem 1.3rem; font-family: "Cinzel", Georgia, serif; font-weight: 600; font-size: 1.05rem; line-height: 1.25; margin-top: -2.2rem; position: relative; max-width: 100%; }
+    .btn { display: inline-block; padding: .55rem 1.5rem; font-weight: 600; cursor: pointer; }
+    .btn:hover { background: linear-gradient(#fff9fb, #fcd7e1); }
+    .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--pink-300); outline-offset: 2px; }
+
+    /* RSVP */
+    form { display: grid; gap: .8rem; width: 100%; text-align: left; }
+    label { display: grid; gap: .15rem; font-weight: 600; font-size: 1.05rem; color: var(--pink-100); }
+    input, select, textarea {
+      font: inherit; color: var(--burg-deep);
+      padding: .45rem .8rem;
+      background: rgba(255, 240, 244, .94);
+      border: 1px solid var(--pink-300);
+      border-radius: 12px;
+      box-shadow: inset 1px 2px 4px rgba(107, 15, 31, .2);
+    }
+    form .btn { justify-self: center; margin-top: .3rem; }
+    #thanks { display: none; font-weight: 600; color: var(--pink-100); }
+
+    /* Scroll button */
+    .hint {
+      position: absolute; left: 50%; bottom: 5.5%; transform: translateX(-50%);
+      z-index: 4; font-size: 1.05rem; padding: .4rem 1.3rem; transition: opacity .3s;
+    }
+    .hint.gone { opacity: 0; pointer-events: none; }
+
+    /* Music button */
+    .music {
+      position: absolute; top: 1.2%; right: 3%; z-index: 5;
+      width: 2.6rem; height: 2.6rem; padding: 0; display: grid; place-items: center;
+      font-size: 1.3rem; line-height: 1;
+      opacity: 0; pointer-events: none; transition: opacity .6s ease 1.2s;
+    }
+    .opened .music { opacity: 1; pointer-events: auto; }
+    .opened .music.off { opacity: .6; text-decoration: line-through; }
+
+    /* Closed envelope: pink door on the left, burgundy door on the right */
+    .doors { position: absolute; inset: 0; z-index: 10; display: flex; }
+    .door { position: relative; width: 50%; height: 100%; overflow: hidden; transition: transform 1.6s cubic-bezier(.65, 0, .25, 1); }
+    .door.l {
+      background: linear-gradient(90deg, #f9c3d2, #eda0b6);
+      --petal: #ffe1ea; --center: #d8708f; --leaf: #f7b8c9; --stem: #f3abbd;
+    }
+    .door.r {
+      background: linear-gradient(90deg, #7a1428, #560b1a);
+      --petal: #8f2238; --petal-edge: rgba(255, 190, 210, .45); --center: #4d0916; --leaf: #7a1529; --stem: #6e1023;
+      --lo: rgba(20, 0, 5, .55); --hi: rgba(255, 170, 195, .3);
+    }
+    .door.l::after, .door.r::after { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(60, 5, 20, .4); }
+    .door.l::after { right: 0; }
+    .door.r::after { left: 0; }
+    .door .corner { width: 150%; }
+    .door.l .corner.tl { left: -30%; top: -4%; }
+    .door.l .corner.br { right: auto; left: -40%; bottom: -3%; width: 130%; }
+    .door.r .corner.tl { left: auto; right: -30%; top: 4%; width: 140%; }
+    .door.r .corner.tl svg { transform: scaleX(-1); }
+    .door.r .corner.br { right: -28%; bottom: 2%; width: 120%; }
+    .door.r .corner.br svg { transform: rotate(180deg) scaleX(-1); }
+    .opened .door.l { transform: translateX(-102%); }
+    .opened .door.r { transform: translateX(102%); }
+
+    .seal {
+      position: absolute; z-index: 12; left: 50%; top: 52%;
+      width: 4.6rem; height: 5.6rem; transform: translate(-50%, -50%);
+      border-radius: 50%; border: 0; cursor: pointer; color: #ffe8ef;
+      background: radial-gradient(circle at 35% 28%, #f7b6c8, #b83c5c 55%, #6b0f1f);
+      box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .25), inset 0 0 0 7px rgba(70, 5, 20, .25), 2px 4px 9px rgba(40, 0, 10, .55);
+      display: grid; place-items: center;
+      transition: opacity .5s, transform .6s;
+    }
+    .seal svg { width: 68%; filter: drop-shadow(0 1px 1px rgba(60, 5, 20, .5)); }
+    .seal:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+    .opened .seal { opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(.8); }
+    .tap {
+      position: absolute; z-index: 12; left: 0; right: 0; top: calc(52% + 4rem);
+      text-align: center; font-style: italic; color: #fff; text-shadow: 0 1px 4px rgba(60, 5, 20, .7);
+      transition: opacity .4s;
+    }
+    .opened .tap { opacity: 0; }
+    .doors.done { display: none; }
+
+    .reveal { opacity: 0; transition: opacity 1.8s ease .9s; }
+    .opened .reveal { opacity: 1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .door, .seal, .tap, .reveal, .hint, .music { transition: none; }
+      .reveal { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="flower">
+      <g style="fill:var(--petal);stroke:var(--petal-edge)" stroke-width="1">
+        <ellipse cx="0" cy="-15" rx="8" ry="15"/>
+        <ellipse cx="0" cy="-15" rx="8" ry="15" transform="rotate(60)"/>
+        <ellipse cx="0" cy="-15" rx="8" ry="15" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-15" rx="8" ry="15" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-15" rx="8" ry="15" transform="rotate(240)"/>
+        <ellipse cx="0" cy="-15" rx="8" ry="15" transform="rotate(300)"/>
+      </g>
+      <circle r="6" style="fill:var(--center);stroke:var(--petal-edge)"/>
+    </g>
+    <g id="leaf">
+      <ellipse cx="0" cy="0" rx="21" ry="8" style="fill:var(--leaf);stroke:var(--petal-edge)" stroke-width="1"/>
+      <path d="M-18 0H18" stroke="rgba(120,20,50,.3)" stroke-width="1"/>
+    </g>
+    <symbol id="sprig" viewBox="0 0 240 240">
+      <g fill="none" style="stroke:var(--stem)" stroke-width="3" stroke-linecap="round">
+        <path d="M0 0C50 40 70 90 120 130S190 190 215 232"/>
+        <path d="M0 0C70 8 120 18 178 72"/>
+        <path d="M0 0C20 60 30 110 62 170"/>
+      </g>
+      <use href="#leaf" transform="translate(32 44) rotate(50)"/>
+      <use href="#leaf" transform="translate(88 98) rotate(-20)"/>
+      <use href="#leaf" transform="translate(150 160) rotate(60)"/>
+      <use href="#leaf" transform="translate(95 22) rotate(15)"/>
+      <use href="#leaf" transform="translate(150 55) rotate(40)"/>
+      <use href="#leaf" transform="translate(22 105) rotate(80)"/>
+      <use href="#leaf" transform="translate(48 150) rotate(100)"/>
+      <use href="#flower" transform="translate(60 58) scale(1.35)"/>
+      <use href="#flower" transform="translate(118 128) scale(1)"/>
+      <use href="#flower" transform="translate(172 188) scale(.8)"/>
+      <use href="#flower" transform="translate(135 40) scale(.9)"/>
+      <use href="#flower" transform="translate(30 130) scale(.75)"/>
+    </symbol>
+    <!-- A ribbon bow, used on the seal and above the invitation line -->
+    <symbol id="bow" viewBox="0 0 100 76">
+      <path d="M50 36C34 4 4 8 7 31C10 54 37 49 50 36Z" fill="currentColor"/>
+      <path d="M50 36C66 4 96 8 93 31C90 54 63 49 50 36Z" fill="currentColor"/>
+      <path d="M46 40L30 73L45 64L50 75L55 64L70 73L54 40Z" fill="currentColor"/>
+      <path d="M20 22C28 18 38 24 44 33M80 22C72 18 62 24 56 33" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="50" cy="37" rx="8" ry="10" fill="currentColor" stroke="rgba(0,0,0,.28)" stroke-width="1.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="stage" id="stage">
+
+  <div class="corner tl emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+  <div class="corner br emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+
+  <div class="frame">
+  <div class="arch" id="arch" tabindex="0" aria-label="Birthday invitation, scroll to read">
+
+    <!-- 1. Ribbon -->
+    <section class="page p1" style="--bg: url('bg1.jpg')">
+      <p class="hey reveal">Hey Pookie listen...</p>
+    </section>
+
+    <!-- 2. The invitation -->
+    <section class="page p2">
+      <svg class="bow-icon" viewBox="0 0 100 76" aria-hidden="true"><use href="#bow"/></svg>
+      <p class="invite-line">I am inviting you to my</p>
+      <p class="age">21<sup>st</sup></p>
+      <p class="event">Birthday<br>Celebration</p>
+      <div class="rule"></div>
+    </section>
+
+    <!-- 3. Date and time -->
+    <section class="page p3" style="--bg: url('bg3.jpg')">
+      <div class="when-card"><span class="small">Date</span><span class="big">23 Jan 2027</span><span class="small">Saturday</span></div>
+      <div class="when-card"><span class="small">Time</span><span class="big">7pm</span></div>
+      <div class="when-card"><span class="small">Dress code</span><span class="big">Burgundy</span><span class="swatch" role="img" aria-label="Burgundy colour swatch"></span></div>
+    </section>
+
+    <!-- 4. Countdown -->
+    <section class="page p4">
+      <h2>Counting down</h2>
+      <div class="rule"></div>
+      <div class="count" id="count" aria-live="off"></div>
+      <p class="small">until the celebration</p>
+    </section>
+
+    <!-- 5. Location -->
+    <section class="page p5">
+      <h2>Location</h2>
+      <div class="map"><iframe id="map" title="Map of Kutama Guesthouse and Lodge" loading="lazy"></iframe></div>
+      <div class="plaque">Kutama Guesthouse and Lodge</div>
+      <p class="small">Pretoria</p>
+      <a class="btn" id="directions" href="#" target="_blank" rel="noopener">Get directions</a>
+    </section>
+
+    <!-- 6. RSVP -->
+    <section class="page p6">
+      <h2>Will you join us?</h2>
+      <p class="small">Reply to Ivhani Makhubela</p>
+      <form id="rsvp">
+        <label>Your name <input name="name" required autocomplete="name"></label>
+        <label>Will you attend?
+          <select name="attending" id="attending" required>
+            <option value="">Choose one</option>
+            <option>Yes, I'll be there</option>
+            <option>No, I can't make it</option>
+          </select>
+        </label>
+        <label id="guestsWrap">How many will be coming, including you? <input type="number" name="guests" id="guests" min="1" max="10" value="1"></label>
+        <label>Message <textarea name="message" rows="2"></textarea></label>
+        <button class="btn" type="submit">Send reply</button>
+      </form>
+      <p id="thanks" role="status">Almost done! Press send in WhatsApp to confirm your reply.</p>
+    </section>
+
+  </div>
+  </div>
+
+  <button class="btn hint" id="hint" type="button">Scroll down &darr;</button>
+
+  <audio id="song" src="song.mp3" loop preload="none"></audio>
+  <button class="btn music" id="music" type="button" aria-label="Turn music off" aria-pressed="true">&#9835;</button>
+
+  <div class="doors" id="doors">
+    <div class="door l">
+      <div class="corner tl emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+      <div class="corner br emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+    </div>
+    <div class="door r">
+      <div class="corner tl emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+      <div class="corner br emboss"><svg class="flora-svg" viewBox="0 0 240 240" aria-hidden="true"><use href="#sprig"/></svg></div>
+    </div>
+    <button class="seal" id="seal" type="button" aria-label="Open the invitation">
+      <svg viewBox="0 0 100 76" aria-hidden="true"><use href="#bow"/></svg>
+    </button>
+    <p class="tap">Tap to open</p>
+  </div>
+
+</main>
+
+<script>
+  // ---- Settings ----
+  const eventDate = new Date("2027-01-23T19:00:00+02:00");   // 23 Jan 2027, 7pm
+  const hostWhatsApp = "27825709367";                        // replies go to this WhatsApp number (country code, no + or spaces)
+  const venueSearch = "Kutama Guesthouse and Lodge, Pretoria"; // what the map shows
+
+  // ---- Open the envelope and start the song ----
+  const stage = document.getElementById("stage");
+  const doors = document.getElementById("doors");
+  const song = document.getElementById("song");
+  const musicBtn = document.getElementById("music");
+  document.getElementById("seal").addEventListener("click", () => {
+    stage.classList.add("opened");
+    song.volume = 0.7;
+    song.play().catch(() => { musicBtn.classList.add("off"); musicBtn.setAttribute("aria-pressed", "false"); });
+    setTimeout(() => doors.classList.add("done"), 1800);
+  });
+
+  // ---- Music on/off ----
+  musicBtn.addEventListener("click", () => {
+    const playing = !song.paused;
+    if (playing) song.pause(); else song.play().catch(() => {});
+    musicBtn.classList.toggle("off", playing);
+    musicBtn.setAttribute("aria-pressed", String(!playing));
+    musicBtn.setAttribute("aria-label", playing ? "Turn music on" : "Turn music off");
+  });
+
+  // ---- Scroll button ----
+  const arch = document.getElementById("arch");
+  const hint = document.getElementById("hint");
+  hint.addEventListener("click", () => arch.scrollBy({ top: arch.clientHeight, behavior: "smooth" }));
+  arch.addEventListener("scroll", () => {
+    const atEnd = arch.scrollTop + arch.clientHeight >= arch.scrollHeight - 12;
+    hint.classList.toggle("gone", atEnd);
+  });
+
+  // ---- Countdown (updates every second) ----
+  const pad = n => String(n).padStart(2, "0");
+  function tick() {
+    const diff = eventDate - new Date();
+    const el = document.getElementById("count");
+    if (diff <= 0) { el.textContent = "It's party time!"; return; }
+    const d = Math.floor(diff / 864e5);
+    const h = Math.floor(diff % 864e5 / 36e5);
+    const m = Math.floor(diff % 36e5 / 6e4);
+    const s = Math.floor(diff % 6e4 / 1e3);
+    el.innerHTML =
+      `<div><b>${d}</b><span>days</span></div>` +
+      `<div><b>${pad(h)}</b><span>hours</span></div>` +
+      `<div><b>${pad(m)}</b><span>minutes</span></div>` +
+      `<div><b>${pad(s)}</b><span>seconds</span></div>`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ---- Map and directions ----
+  const q = encodeURIComponent(venueSearch);
+  document.getElementById("map").src = `https://maps.google.com/maps?q=${q}&z=15&output=embed`;
+  document.getElementById("directions").href = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+
+  // ---- RSVP: opens WhatsApp with the guest's answer ready to send ----
+  const attending = document.getElementById("attending");
+  const guestsWrap = document.getElementById("guestsWrap");
+  const guests = document.getElementById("guests");
+  attending.addEventListener("change", () => {
+    const no = attending.value.startsWith("No");
+    guestsWrap.style.display = no ? "none" : "";
+    guests.disabled = no;
+  });
+
+  document.getElementById("rsvp").addEventListener("submit", e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const going = String(f.get("attending")).startsWith("Yes");
+    let text = `Hi Ivhani, it's ${f.get("name")}.\n` +
+      (going ? `I'll be at your 21st birthday! 🎀\nTotal guests (including me): ${f.get("guests")}`
+             : `Sadly I can't make it to your 21st birthday.`);
+    const msg = String(f.get("message") || "").trim();
+    if (msg) text += `\n\n${msg}`;
+    window.open(`https://wa.me/${hostWhatsApp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    document.getElementById("thanks").style.display = "block";
+  });
+</script>
+</body>
+</html>
